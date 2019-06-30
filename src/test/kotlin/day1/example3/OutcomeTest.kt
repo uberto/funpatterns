@@ -1,4 +1,4 @@
-package day1.example2
+package day1.example3
 
 import org.junit.jupiter.api.Test
 

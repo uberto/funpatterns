@@ -1,4 +1,4 @@
-package day1.example2
+package day1.example3
 
 
 sealed class  Outcome<out E: Error, out T: Any> {
