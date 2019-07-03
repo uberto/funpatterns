@@ -1,4 +1,4 @@
-package day1.exercise3
+package day1.homeExercise
 
 import org.junit.jupiter.api.Test
 
@@ -9,7 +9,7 @@ class BirthdayKataTest {
     @Test
     fun `happy path`(){
 
-       sendGreetingsToAll("fixtures/bigFile.csv")
+        sendGreetingsToAll("fixtures/bigFile.csv")
 
         TODO("Assert emails sent")
     }
