@@ -2,7 +2,7 @@ package day1.exercise2
 
 
 fun compactJson(json: Sequence<Char>): String =
-    json.fold(ClosedQuoteJsonCompactor(""), ::compactor).newJson
+    json.fold(NoOpenQuotesJsonCompactor(""), ::compactor).newJson
 
 
 fun compactor(prev: JsonCompactor, c: Char): JsonCompactor =
@@ -13,25 +13,25 @@ sealed class JsonCompactor {
     abstract fun compact(c: Char): JsonCompactor
 }
 
-data class OpenQuoteJsonCompactor(override val newJson: String) : JsonCompactor() {
+data class OpenQuotesJsonCompactor(override val newJson: String) : JsonCompactor() {
 
     override fun compact(c: Char): JsonCompactor =
         when (c) {
-            '"' -> ClosedQuoteJsonCompactor(newJson + "\"")
-            else -> OpenQuoteJsonCompactor(newJson + c)
+            '"' -> NoOpenQuotesJsonCompactor(newJson + "\"")
+            else -> OpenQuotesJsonCompactor(newJson + c)
         }
 
 }
 
-data class ClosedQuoteJsonCompactor(override val newJson: String) : JsonCompactor() {
+data class NoOpenQuotesJsonCompactor(override val newJson: String) : JsonCompactor() {
 
     override fun compact(c: Char): JsonCompactor =
         when (c) {
-            '\t' -> ClosedQuoteJsonCompactor(newJson)
-            '\n' -> ClosedQuoteJsonCompactor(newJson)
-            ' ' -> ClosedQuoteJsonCompactor(newJson)
-            '"' -> OpenQuoteJsonCompactor(newJson + "\"")
-            else -> ClosedQuoteJsonCompactor(newJson + c)
+            '\t' -> NoOpenQuotesJsonCompactor(newJson)
+            '\n' -> NoOpenQuotesJsonCompactor(newJson)
+            ' ' -> NoOpenQuotesJsonCompactor(newJson)
+            '"' -> OpenQuotesJsonCompactor(newJson + "\"")
+            else -> NoOpenQuotesJsonCompactor(newJson + c)
         }
 
 }
