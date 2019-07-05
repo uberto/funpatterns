@@ -2,7 +2,7 @@ package day1.example2
 
 sealed class Maybe<out A> {
 
-    fun <B> map(f: (A) -> B): Maybe<B> = fold(none(), { a -> just(f(a))})
+    fun <B> map(f: (A) -> B): Maybe<B> = fold(none(), { a -> just(f(a)) })
 
     fun <B> flatMap(f: (A) -> Maybe<B>): Maybe<B> = fold(none(), f)
 
@@ -18,6 +18,6 @@ sealed class Maybe<out A> {
     }
 }
 
-fun <T> Maybe<T>.getOrElse(t: T): T= fold(t, ::identity)
+fun <T> Maybe<T>.getOrElse(t: T): T = fold(t, ::identity)
 data class Just<A>(val value: A) : Maybe<A>()
 object None : Maybe<Nothing>()

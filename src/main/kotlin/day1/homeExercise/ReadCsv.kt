@@ -2,7 +2,7 @@ package day1.homeExercise
 
 import day1.example3.Outcome
 
-class CsvReader: (FileName) -> Outcome<ProgramError, CsvFile> {
+class ReadCsv: (FileName) -> Outcome<ProgramError, CsvFile> {
     override fun invoke(file: FileName): Outcome<ProgramError, CsvFile> {
         return Outcome.tryThis {
             this.javaClass.getResource(file.path)
@@ -12,7 +12,7 @@ class CsvReader: (FileName) -> Outcome<ProgramError, CsvFile> {
                 .map { line -> CsvLine(line) }
                 .let { lines -> CsvFile(lines) }
         }.mapFailure {
-            FileNotFound
+            FileNotFound(file.path)
         }
     }
 }
