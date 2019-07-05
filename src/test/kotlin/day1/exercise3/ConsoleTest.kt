@@ -22,9 +22,9 @@ class ConsoleTest {
         input.add("Functional")
         input.add("World")
 
-        echo.echo()
-        echo.echo()
-        echo.echo()
+        echo()
+        echo()
+        echo()
 
         assertThat(output.remove()).isEqualTo("Hello")
         assertThat(output.remove()).isEqualTo("Functional")
@@ -36,7 +36,19 @@ class ConsoleTest {
     fun `test a mini cmdline calculator`() {
         // giving + 1 1
         // should give 2 as result
+        val calc = Calculator(pseudoPrint, pseudoReadline)
 
+        input.add("+ 3 4")
+        input.add("* 5 6")
+        input.add("@ 7 8")
+
+        calc()
+        calc()
+        calc()
+
+        assertThat(output.remove()).isEqualTo("7.0")
+        assertThat(output.remove()).isEqualTo("30.0")
+        assertThat(output.remove()).isEqualTo("Unknown operation @")
     }
 
 }
