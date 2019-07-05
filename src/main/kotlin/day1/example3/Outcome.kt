@@ -1,9 +1,10 @@
 package day1.example3
 
+import java.lang.Exception
 import java.util.*
 
 
-sealed class  Outcome<out E: Error, out T: Any> {
+sealed class Outcome<out E: Error, out T: Any> {
 
 
     fun <U: Any> map(f: (T) -> U): Outcome<E, U> =
@@ -18,6 +19,9 @@ sealed class  Outcome<out E: Error, out T: Any> {
             is Failure -> Failure(f(this.error))
         }
 
+    abstract fun isFailure(): Boolean
+    abstract fun fold(): T
+
     companion object {
         fun <T: Any> tryThis(block: () -> T): Outcome<ThrowableError, T> =
             try {
@@ -28,8 +32,15 @@ sealed class  Outcome<out E: Error, out T: Any> {
     }
 }
 
-data class Success<T: Any>(val value: T): Outcome<Nothing, T>()
-data class Failure<E: Error>(val error: E): Outcome<E, Nothing>()
+data class Success<T: Any>(val value: T): Outcome<Nothing, T>() {
+    override fun fold(): T = value
+    override fun isFailure(): Boolean = false
+}
+
+data class Failure<E: Error>(val error: E): Outcome<E, Nothing>() {
+    override fun fold(): Nothing = throw Exception(error.msg)
+    override fun isFailure(): Boolean = true
+}
 
 
 inline fun <T: Any, U: Any, E: Error> Outcome<E, T>.flatMap(f: (T) -> Outcome<E, U>): Outcome<E, U> =
