@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 
 class OutcomeTest {
 
-    data class DbError(override val msg: String): Error
+    data class DbError(val msg: String)
 
     data class Order(val id: Int, val userId: Int, val amount: Double)
 

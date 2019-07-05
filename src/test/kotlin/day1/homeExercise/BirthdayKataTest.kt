@@ -20,8 +20,6 @@ class BirthdayKataTest {
         sendGreetingsToAll("fixtures/wrongFile.csv")
 
         TODO("Assert correct error")
-
-
     }
 
 
