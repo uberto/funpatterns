@@ -25,9 +25,9 @@ class FunCompositionTest {
     }
 
     @Test
-    fun `f on g with differnt types  is equivalent to f(g())`(){
+    fun `f on g with differ5nt types  is equivalent to f(g())`(){
 
-        val r = inc(strLen("ciao")) //11
+        val r = inc(strLen("ciao")) //5
 
         val newFun = ::inc on ::strLen
 

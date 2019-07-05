@@ -13,11 +13,18 @@ class ConsoleTest {
 
         val echo = EchoMachine(pseudoPrint, pseudoReadline)
 
+        echo.echo()
+
         TODO("finish the test with assertions")
 
     }
 
-    fun main(){
+
+    @Test
+    fun `test a mini cmdline calculator`(){
+        // giving + 1 1
+        // should give 2 as result
 
     }
+
 }
