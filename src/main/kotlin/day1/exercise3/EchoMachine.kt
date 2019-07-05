@@ -5,7 +5,7 @@ data class EchoMachine(
     val reader: () -> Console<String>
 ) {
 
-    fun echo() {
+    operator fun invoke() {
         val msg: String = reader().exec()
 
         writer(msg).exec()
