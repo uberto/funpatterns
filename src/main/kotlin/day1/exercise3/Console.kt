@@ -4,11 +4,11 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
-data class Console<T> (val run: () -> T) {
+data class Console<T> (val exec: () -> T) {
 
-    fun andThen(other: Console<T>): Console<T> = Console {
-        this.run()
-        other.run()
+    fun <B> andThen(other: Console<B>): Console<B> = Console {
+        this.exec()
+        other.exec()
     }
 }
 
@@ -17,4 +17,4 @@ fun printIO(msg: String) = Console { println(msg)}
 
 val reader =  BufferedReader( InputStreamReader(System.`in`))
 
-fun readlineIO(msg: String) = Console<String> { reader.readLine() }
+fun readlineIO() = Console<String> { reader.readLine() }

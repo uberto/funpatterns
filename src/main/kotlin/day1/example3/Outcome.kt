@@ -1,5 +1,7 @@
 package day1.example3
 
+import java.util.*
+
 
 sealed class  Outcome<out E: Error, out T: Any> {
 
@@ -49,6 +51,12 @@ inline fun <T: Any, E: Error> Outcome<E, T>.onFailure(block: (E) -> Nothing): T 
     when (this) {
         is Success<T> -> value
         is Failure<E> -> block(error)
+    }
+
+fun <T: Any, E: Error> Outcome<E, T>.toOptional(): Optional<T> =
+    when (this) {
+        is Success<T> -> Optional.of(value)
+        is Failure<E> -> Optional.empty()
     }
 
 interface Error{

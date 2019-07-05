@@ -1,5 +1,8 @@
 package day1.example3
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class OutcomeTest {
@@ -11,9 +14,9 @@ class OutcomeTest {
     data class User(val id: Int, val name: String)
 
 
-    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> = TODO()
+    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> = Success(Order(orderId, 1, 1.0))
 
-    fun readUserFromDb(id: Int): Outcome<DbError, User> = TODO()
+    fun readUserFromDb(id: Int): Outcome<DbError, User> = Success(User(id, "John"))
 
 
     @Test
@@ -21,8 +24,8 @@ class OutcomeTest {
 
         val res = readOrderFromDb(123)
         return when(res){
-            is Success -> TODO()
-            is Failure -> TODO()
+            is Success -> assertThat (res.value.id ).isEqualTo(123)
+            is Failure -> Assertions.fail()
         }
 
     }
