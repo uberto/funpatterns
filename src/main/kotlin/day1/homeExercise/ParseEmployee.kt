@@ -4,15 +4,6 @@ import day1.example3.Outcome
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class Employee(
-    val lastName: String,
-    val firstName: String,
-    val birthDate: LocalDate,
-    val email: Email
-)
-
-data class Email(val value: String)
-
 class ParseEmployee : (CsvLine) -> Outcome<ProgramError, Employee> {
     override fun invoke(line: CsvLine): Outcome<ProgramError, Employee> =
         line.raw.split(",")

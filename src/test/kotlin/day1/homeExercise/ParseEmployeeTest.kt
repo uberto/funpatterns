@@ -27,7 +27,7 @@ class ParseEmployeeTest {
     }
 
     @Test
-    internal fun `csv missing a field`() {
+    internal fun `malformed csv line`() {
         assertThat(parseEmployee(CsvLine("#comment")))
             .isEqualTo(Failure(ParseError("#comment")))
     }
