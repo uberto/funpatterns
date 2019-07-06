@@ -27,7 +27,7 @@ class CurryingTest {
 
         val now = Date()
         val fred =
-            ::Person.curry()   `@` now `@` false `@` 4 `@` "Fred"
+            ::Person.curry() `@` now `@` false `@` 4 `@` "Fred"
 
         val fredOrig =
             Person(now,false, 4,"Fred")

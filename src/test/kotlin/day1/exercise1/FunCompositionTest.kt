@@ -10,9 +10,11 @@ class FunCompositionTest {
     fun double(x: Int) = x * 2
     fun pad(s: String) = " $s"
     fun mirror(s: String) = "$s${s.reversed()}"
+    fun strLen(s:String): Int = s.length
+
 
     @Test
-    fun `f on g  is equivalent to f(g())`(){
+    fun `f on g is equivalent to f(g())`(){
 
         val r = inc(double(5)) //11
 
@@ -22,9 +24,20 @@ class FunCompositionTest {
 
     }
 
+    @Test
+    fun `f on g with different types is equivalent to f(g())`(){
+
+        val r = inc(strLen("ciao")) //5
+
+        val newFun = ::inc on ::strLen
+
+        assertThat(newFun("ciao")).isEqualTo(r)
+
+    }
+
 
     @Test
-    fun `f andThen g  is equivalent to g(f())`(){
+    fun `f andThen g is equivalent to g(f())`(){
 
         val r = mirror(pad("*")) //" ** "
 
