@@ -44,7 +44,7 @@ inline fun <E, T: Any>Outcome<E, T>.mapNullableError(f: (T) -> E?): Outcome<E, U
         is Failure<E> -> this
     }
 
-inline fun <T: Any, E> Outcome<E, T>.onFailure(block: (E) -> T): T =
+inline fun <T: Any, E> Outcome<E, T>.onFailure(block: (E) -> T): T = // acts like a recover from failure
     when (this) {
         is Success<T> -> value
         is Failure<E> -> block(error)
