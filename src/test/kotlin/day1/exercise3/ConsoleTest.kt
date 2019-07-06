@@ -19,12 +19,10 @@ class ConsoleTest {
 
     }
 
-
     @Test
     fun `test a mini cmdline calculator`(){
         // giving + 1 1
         // should give 2 as result
 
     }
-
 }

@@ -1,6 +1,9 @@
 package day1.example3
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 
 class OutcomeTest {
 
@@ -11,39 +14,45 @@ class OutcomeTest {
     data class User(val id: Int, val name: String)
 
 
-    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> = TODO()
+    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> =
+        if (orderId == existingOrderId)
+            Success(Order(existingOrderId, 123, 123.4))
+        else
+            Failure(DbError("order $orderId does not exist"))
 
-    fun readUserFromDb(id: Int): Outcome<DbError, User> = TODO()
+    fun readUserFromDb(id: Int): Outcome<DbError, User> = Success(User(id, "Joe"))
 
+    val existingOrderId = 123
+    val notExistingOrderId = 234
 
     @Test
-    fun `check for error cases`(){
+    fun `check for error cases`() {
 
-        val res = readOrderFromDb(123)
-        return when(res){
-            is Success -> TODO()
-            is Failure -> TODO()
+        val res = readOrderFromDb(notExistingOrderId)
+        when (res) {
+            is Success -> fail("this order doesn't exit")
+            is Failure -> assertThat(res.error).isEqualTo(DbError("order $notExistingOrderId does not exist"))
         }
 
     }
 
     @Test
-    fun `map results`(){
-        val amount: Double = readOrderFromDb(123)
+    fun `map results`() {
+        val amount: Double = readOrderFromDb(existingOrderId)
             .map { o -> o.amount }
             .onFailure { return }
 
-
+        assertThat(amount).isEqualTo(123.4)
     }
 
 
     @Test
-    fun `combine results`(){
-        val userName: String = readOrderFromDb(123)
+    fun `combine results`() {
+        val userName: String = readOrderFromDb(existingOrderId)
             .flatMap { o -> readUserFromDb(o.userId) }
-            .map {it.name}
-            .onFailure { return }
+            .map { it.name }
+            .onFailure { fail("Order and User should exist") }
 
-
+        assertThat(userName).isEqualTo("Joe")
     }
 }
