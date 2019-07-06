@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 
 class ConsoleTest {
 
+    //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
 
     val pseudoPrint: (String) -> Console<Unit> = TODO()
     val pseudoReadline: () -> Console<String> = TODO()
