@@ -14,6 +14,7 @@ public class EchoMachine {
     }
 
     public void echo() {
-        throw new RuntimeException("TODO");
+        String msg = reader.get().exec.get();
+        writer.apply(msg).exec.get();
     }
 }

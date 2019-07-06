@@ -2,27 +2,49 @@ package day1java.exercise3;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ConsoleTest {
 
-    //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
+    static Deque<String> output = new ArrayDeque<>();
+    static Deque<String> input = new ArrayDeque<>();
 
-    static Console<Void> pseudoPrint(String msg) { throw new RuntimeException("TODO"); }
-    static Console<String> pseudoReadline() { throw new RuntimeException("TODO"); }
+    static Console<Void> pseudoPrint(String msg) {
+        return new Console <> (() -> {
+            output.add(msg);
+            return null;
+        });
+    }
+
+    static Console<String> pseudoReadline() {
+        return new Console <> (() -> input.remove());
+    }
 
     @Test
-    public void howCanWeTestTheConsole(){
+    public void howCanWeTestTheConsole() {
 
         EchoMachine echo = new EchoMachine(ConsoleTest::pseudoPrint, ConsoleTest::pseudoReadline);
 
+        input.add("Hello");
+        input.add("Functional");
+        input.add("World");
+
+        echo.echo();
+        echo.echo();
         echo.echo();
 
-        throw new RuntimeException("finish the test with assertions");
+        assertThat(output.remove()).isEqualTo("Hello");
+        assertThat(output.remove()).isEqualTo("Functional");
+        assertThat(output.remove()).isEqualTo("World");
 
     }
 
 
     @Test
-    public void testAMiniCmdlineCalculator(){
+    public void testAMiniCmdlineCalculator() {
         // giving + 1 1
         // should give 2 as result
 

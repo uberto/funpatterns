@@ -6,7 +6,7 @@ public class JsonFolder {
         return json
                 .chars()
                 .mapToObj(c -> (char) c)
-                .reduce( null , JsonFolder::accumulate, JsonFolder::combine)  //TODO: replace null
+                .reduce( new JsonCompactorOutsideQuotes(""), JsonFolder::accumulate, JsonFolder::combine)
                 .newJson();
     }
 
