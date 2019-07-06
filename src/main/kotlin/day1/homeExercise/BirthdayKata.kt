@@ -13,7 +13,7 @@ fun reader(fileName: String) : Outcome<ThrowableError, CSV> =
     Outcome.tryThis { FileReader(fileName)
         .readLines().stream()
         .skip(1)
-        .map { it.split(", ") }
+        .map { it.split(",").map { field -> field.trim() } }
         .collect(Collectors.toList())  }
 
 fun sender(employee: Employee): Outcome<ThrowableError, Unit> = Outcome.tryThis { println(employee) }

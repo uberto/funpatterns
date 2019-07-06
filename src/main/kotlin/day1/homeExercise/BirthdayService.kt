@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-fun <T>Optional<T>.toList(): List<T> = if(this.isEmpty) emptyList() else listOf(this.get())
+fun <T>Optional<T>.toIterable(): Iterable<T> = if(this.isEmpty) emptyList() else listOf(this.get())
 
 private val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
 
@@ -34,7 +34,7 @@ object BirthdayService {
             .map { Employee(line[0], line[1], it, line[3]) }
     }
 
-    fun parseCsv(csv: CSV) = csv.flatMap { recordToEmployee(it).toList() }
+    fun parseCsv(csv: CSV) = csv.flatMap { recordToEmployee(it).toIterable() }
 
     private fun filterCelebrated(employees: List<Employee>, xDate: LocalDate): List<Employee> =
         employees.filter { it.isBirthday(xDate) }

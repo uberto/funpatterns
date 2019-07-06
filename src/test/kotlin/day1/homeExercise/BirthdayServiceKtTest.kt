@@ -12,7 +12,7 @@ internal class BirthdayServiceKtTest {
     @Test
     fun `right line map to an employee`() {
         val service = BirthdayService
-        val test: Record = listOf("Felice", "Pagano", "1985-06-07", "paganofelice@gmail.com")
+        val test: Record = listOf("Felice", "Pagano", "1985/06/07", "paganofelice@gmail.com")
         assertThat(service.recordToEmployee(test).isPresent).isTrue()
     }
 
@@ -33,9 +33,9 @@ internal class BirthdayServiceKtTest {
     @Test
     fun `only well formed Record will be part of the output`() {
         val test: CSV = listOf(
-            listOf("Felice", "Pagano", "1985-05-07", "paganofelice@gmail.com"),
-            listOf("Felice", "Pagano", "1985-00-07", "paganofelice@gmail.com"),
-            listOf("Felice", "1985-05-07", "paganofelice@gmail.com")
+            listOf("Felice", "Pagano", "1985/05/07", "paganofelice@gmail.com"),
+            listOf("Felice", "Pagano", "1985/00/07", "paganofelice@gmail.com"),
+            listOf("Felice", "1985/05/07", "paganofelice@gmail.com")
         )
         assertThat(BirthdayService.parseCsv(test)).size().isEqualTo(1)
     }
