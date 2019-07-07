@@ -3,7 +3,7 @@ package day1java.exercise2;
 
 public class JsonCompactorOutsideQuotes implements JsonCompactor {
 
-    private String newJson;
+    private final String newJson;
 
     public JsonCompactorOutsideQuotes(String newJson) {
         this.newJson = newJson;

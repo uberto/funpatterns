@@ -45,6 +45,14 @@ public class Calculator {
         }
     }
 
+    //launch this to use the calculator from cmdline
+    public static void main(String[] args){
+        Calculator calc = new Calculator(Console::printIO, Console::readlineIO);
+
+        while (true) {
+            calc.calc();
+        }
+    }
 }
 
 

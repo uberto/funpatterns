@@ -17,16 +17,25 @@ data class Calculator(
         writer(res).exec()
     }
 
-    fun operation(op: String, a: String, b: String) : String {
+    fun operation(op: String, a: String, b: String): String {
         val x = a.toDouble()
         val y = b.toDouble()
         val res = when (op) {
-            "+" -> x+y
-            "-" -> x-y
-            "*" -> x*y
-            "/" -> x/y
+            "+" -> x + y
+            "-" -> x - y
+            "*" -> x * y
+            "/" -> x / y
             else -> "Unknown operation $op"
         }
         return res.toString()
     }
 }
+
+fun main() {
+    val calc = Calculator(::printIO, ::readlineIO)
+
+    while (true) {
+        calc()
+    }
+}
+
