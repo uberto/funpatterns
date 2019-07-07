@@ -7,6 +7,7 @@ import java.util.*
 
 class ConsoleTest {
 
+    //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
     private val inputQueue: Queue<String> = LinkedList()
     private val outputQueue: Queue<String> = LinkedList()
 
