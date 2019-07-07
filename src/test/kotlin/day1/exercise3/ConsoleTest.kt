@@ -9,6 +9,7 @@ import java.util.*
 
 class ConsoleTest {
 
+    //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
     private val stdOut = ArrayDeque<String>()
     private val stdIn = ArrayDeque<String>()
 
