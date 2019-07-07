@@ -20,7 +20,7 @@ wrapper {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation 'javax.mail:javax.mail-api:1.6.2'
+    compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 
     testImplementation 'com.github.davidmoten:subethasmtp:5.0'
     testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.17'
