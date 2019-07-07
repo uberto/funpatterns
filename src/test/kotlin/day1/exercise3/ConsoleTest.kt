@@ -10,6 +10,8 @@ class ConsoleTest {
     private val inputQueue: Queue<String> = LinkedList()
     private val outputQueue: Queue<String> = LinkedList()
 
+    //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
+
     private val pseudoPrint: (String) -> Console<Unit> = { msg ->
         Console {
             outputQueue.offer(msg)
