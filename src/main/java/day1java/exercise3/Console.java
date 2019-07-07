@@ -14,10 +14,6 @@ public class Console<T> {
     public Supplier<T> exec;
 
 
-
-
-
-
     public static Console<Void> printIO(String msg) {
         return new Console<>(() -> {
             System.out.println(msg);
