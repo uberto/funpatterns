@@ -15,6 +15,13 @@ sealed class  Outcome<out E, out T: Any> {
             is Failure -> Failure(f(this.error))
         }
 
+    fun <B> fold(ifEmpty: (E) -> B, ifNotEmpty: (T) -> B): B =
+        when (this){
+            is Success -> ifNotEmpty(this.value)
+            is Failure -> ifEmpty(this.error)
+        }
+
+
     companion object {
         fun <T: Any> tryThis(block: () -> T): Outcome<Throwable, T> =
             try {
