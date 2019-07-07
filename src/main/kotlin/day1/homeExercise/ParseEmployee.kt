@@ -14,7 +14,7 @@ class ParseEmployee : (CsvLine) -> Outcome<ProgramError, Employee> {
                         parts[0],
                         parts[1],
                         LocalDate.parse(parts[2], DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                        Email(parts[3])
+                        EmailAddress(parts[3])
                     )
                 }.mapFailure { ParseError(line.raw) }
             }

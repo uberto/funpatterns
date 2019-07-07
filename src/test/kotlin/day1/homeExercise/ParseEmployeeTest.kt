@@ -20,7 +20,7 @@ class ParseEmployeeTest {
                         "Doe",
                         "John",
                         LocalDate.of(1982, 10, 8),
-                        Email("john.doe@foobar.com")
+                        EmailAddress("john.doe@foobar.com")
                     )
                 )
             )

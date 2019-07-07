@@ -3,7 +3,7 @@ package day1.homeExercise
 import java.time.LocalDate
 import java.time.Month
 
-class IsEmployeeBirthdayToday(private val today: LocalDate): (Employee) -> Boolean {
+class EmployeeBirthdayFilter(private val today: LocalDate): (Employee) -> Boolean {
 
     override fun invoke(e: Employee): Boolean =
         when {

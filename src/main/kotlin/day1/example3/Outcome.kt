@@ -29,6 +29,8 @@ sealed class  Outcome<out E, out T: Any> {
             } catch (e: Throwable){
                 Failure(e)
             }
+
+        fun <T:Any> success(value: T) = Success(value)
     }
 }
 
@@ -56,3 +58,13 @@ inline fun <T: Any, E> Outcome<E, T>.onFailure(block: (E) -> T): T = // acts lik
         is Success<T> -> value
         is Failure<E> -> block(error)
     }
+
+fun <E, T: Any> List<Outcome<E, T>>.sequence(): Outcome<E, List<T>> {
+    val initial: Outcome<E, List<T>> = Outcome.success(listOf())
+    return this.fold(initial, { acc, curr ->
+        curr.fold(
+            { f -> Failure(f) } ,
+            { value -> acc.map { list -> list.plus(value)}}
+        )
+    })
+}

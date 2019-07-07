@@ -6,7 +6,7 @@ data class Employee(
     val lastName: String,
     val firstName: String,
     val birthDate: LocalDate,
-    val email: Email
+    val emailAddress: EmailAddress
 )
 
-data class Email(val value: String)
+data class EmailAddress(val value: String)

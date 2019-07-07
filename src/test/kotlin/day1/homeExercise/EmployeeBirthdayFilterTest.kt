@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class IsEmployeeBirthdayTodayTest {
+class EmployeeBirthdayFilterTest {
 
     @Test
     fun `simple positive case`() {
@@ -14,10 +14,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1970, 7, 6),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertTrue(IsEmployeeBirthdayToday(today)(employee))
+        assertTrue(EmployeeBirthdayFilter(today)(employee))
     }
 
     @Test
@@ -27,10 +27,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1970, 7, 7),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertFalse(IsEmployeeBirthdayToday(today)(employee))
+        assertFalse(EmployeeBirthdayFilter(today)(employee))
     }
 
 
@@ -41,10 +41,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1980, 2, 29),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertTrue(IsEmployeeBirthdayToday(today)(employee))
+        assertTrue(EmployeeBirthdayFilter(today)(employee))
     }
 
     @Test
@@ -54,10 +54,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1980, 2, 29),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertTrue(IsEmployeeBirthdayToday(today)(employee))
+        assertTrue(EmployeeBirthdayFilter(today)(employee))
     }
 
     @Test
@@ -67,10 +67,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1980, 2, 29),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertFalse(IsEmployeeBirthdayToday(today)(employee))
+        assertFalse(EmployeeBirthdayFilter(today)(employee))
     }
 
     @Test
@@ -80,10 +80,10 @@ class IsEmployeeBirthdayTodayTest {
             "Doe",
             "John",
             LocalDate.of(1980, 2, 29),
-            Email("john@email.com")
+            EmailAddress("john@email.com")
         )
 
-        assertFalse(IsEmployeeBirthdayToday(today)(employee))
+        assertFalse(EmployeeBirthdayFilter(today)(employee))
     }
 
 }
