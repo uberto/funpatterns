@@ -24,5 +24,10 @@ class CmdLineCalculator(
             )
     }
 
+}
 
+fun main() {
+    val calculator = CmdLineCalculator(::printIO, ::readlineIO)
+
+    calculator.enter()
 }

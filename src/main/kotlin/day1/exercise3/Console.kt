@@ -17,4 +17,4 @@ fun printIO(msg: String): Console<Unit> = Console { println(msg)}
 
 val reader =  BufferedReader( InputStreamReader(System.`in`))
 
-fun readlineIO(msg: String) = Console<String> { reader.readLine() }
+fun readlineIO() = Console<String> { reader.readLine() }
