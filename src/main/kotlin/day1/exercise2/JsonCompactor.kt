@@ -26,12 +26,14 @@ data class OpenQuotesJsonCompactor(override val newJson: String) : JsonCompactor
 data class NoOpenQuotesJsonCompactor(override val newJson: String) : JsonCompactor() {
 
     override fun compact(c: Char): JsonCompactor =
-        when (c) {
-            '\t' -> NoOpenQuotesJsonCompactor(newJson)
-            '\n' -> NoOpenQuotesJsonCompactor(newJson)
-            ' ' -> NoOpenQuotesJsonCompactor(newJson)
-            '"' -> OpenQuotesJsonCompactor(newJson + "\"")
+        when  {
+            c.isSpace() -> this
+            c == '"' -> OpenQuotesJsonCompactor(newJson + '"')
             else -> NoOpenQuotesJsonCompactor(newJson + c)
         }
 
+
+    private fun Char.isSpace(): Boolean = this == ' ' || this == '\t' || this == '\n'
+
 }
+
