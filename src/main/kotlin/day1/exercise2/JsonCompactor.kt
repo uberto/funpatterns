@@ -2,7 +2,7 @@ package day1.exercise2
 
 
 fun compactJson(json: Sequence<Char>): String =
-    json.fold( MyJsonCompactor(""), ::compactor).newJson
+    json.fold( OutsideQuoteJsonCompactor(""), ::compactor).newJson
 
 
 fun compactor(prev: JsonCompactor, c: Char): JsonCompactor =
@@ -16,14 +16,19 @@ sealed class JsonCompactor{
     abstract fun compact(c: Char): JsonCompactor
 }
 
-data class MyJsonCompactor(override val newJson: String) : JsonCompactor() {
+data class InsideQuoteJsonCompactor(override val newJson: String) : JsonCompactor() {
 
-    override fun compact(c: Char): JsonCompactor {
-        val count = newJson.count { it == '"' }
-        val result = if(count % 2 == 0 && blackListChar.contains(c)) newJson
-            else newJson + c
+    override fun compact(c: Char): JsonCompactor = when(c) {
+            '"' -> OutsideQuoteJsonCompactor(newJson+c)
+            else -> InsideQuoteJsonCompactor(newJson + c)
+        }
+}
 
-        return MyJsonCompactor(result)
-    }
+data class OutsideQuoteJsonCompactor(override val newJson: String) : JsonCompactor() {
 
+    override fun compact(c: Char): JsonCompactor = when(c) {
+            '"' -> InsideQuoteJsonCompactor(newJson+c)
+            in blackListChar -> OutsideQuoteJsonCompactor(newJson)
+            else -> OutsideQuoteJsonCompactor(newJson + c)
+        }
 }
