@@ -6,14 +6,14 @@ import java.io.InputStreamReader
 
 data class Console<T> (val exec: () -> T) {
 
-    fun andThen(other: Console<T>): Console<T> = Console {
+    fun <B> andThen(other: Console<B>): Console<B> = Console {
         this.exec()
         other.exec()
     }
 }
 
 
-fun printIO(msg: String): Console<Unit> = Console { println(msg)}
+fun printIO(msg: String) = Console { println(msg)}
 
 val reader =  BufferedReader( InputStreamReader(System.`in`))
 
