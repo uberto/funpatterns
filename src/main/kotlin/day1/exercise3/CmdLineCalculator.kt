@@ -8,15 +8,15 @@ class CmdLineCalculator(
     val cin: () -> Console<String>
 ) {
     fun enter() {
-        cin().exec().let { input ->
+        cin().flatMap { input: String ->
             input.split(" ")
                 .let { (operator, operand1, operand2) ->
                     Outcome.tryThis{ execOperation(operator, operand1, operand2) }
                 }.fold(
-                    { cout("Error: cannot process $input").exec()},
-                    { v -> cout(v.toString()).exec()}
+                    { cout("Error: cannot process $input")},
+                    { v -> cout(v.toString())}
                 )
-        }
+        }.exec()
     }
 
     private fun execOperation(operator: String, operand1: String, operand2: String): Int {

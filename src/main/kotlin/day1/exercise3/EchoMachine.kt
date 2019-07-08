@@ -6,8 +6,6 @@ data class EchoMachine(
 ){
 
     fun echo(){
-        val console: Console<String> = reader()
-        val message = console.exec()
-        writer(message).exec()
+        reader().flatMap(writer).exec()
     }
 }

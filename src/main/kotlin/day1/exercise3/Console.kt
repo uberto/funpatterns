@@ -10,6 +10,9 @@ data class Console<T> (val exec: () -> T) {
         this.exec()
         other.exec()
     }
+
+    fun <U> map(f: (T) ->U): Console<U> = Console { f(exec()) }
+    fun <U> flatMap(f: (T) ->Console<U>): Console<U> = f(exec())
 }
 
 
