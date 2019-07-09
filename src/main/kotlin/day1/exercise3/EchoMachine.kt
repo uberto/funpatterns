@@ -6,6 +6,6 @@ data class EchoMachine(
 ){
 
     fun echo(){
-        TODO()
+        reader().flatMap(writer).exec()
     }
 }

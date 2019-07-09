@@ -1,8 +1,7 @@
 package day1.example3
 
 
-sealed class  Outcome<out E: Error, out T: Any> {
-
+sealed class  Outcome<out E, out T: Any> {
 
     fun <U: Any> map(f: (T) -> U): Outcome<E, U> =
         when (this){
@@ -10,33 +9,42 @@ sealed class  Outcome<out E: Error, out T: Any> {
             is Failure -> this
         }
 
-    fun <U: Error> mapFailure(f: (E) -> U): Outcome<U, T> =
+    fun <U> mapFailure(f: (E) -> U): Outcome<U, T> =
         when (this){
             is Success -> this
             is Failure -> Failure(f(this.error))
         }
 
+    fun <B> fold(ifEmpty: (E) -> B, ifNotEmpty: (T) -> B): B =
+        when (this){
+            is Success -> ifNotEmpty(this.value)
+            is Failure -> ifEmpty(this.error)
+        }
+
+
     companion object {
-        fun <T: Any> tryThis(block: () -> T): Outcome<ThrowableError, T> =
+        fun <T: Any> tryThis(block: () -> T): Outcome<Throwable, T> =
             try {
                 Success(block())
             } catch (e: Throwable){
-                Failure(ThrowableError(e))
+                Failure(e)
             }
+
+        fun <T:Any> success(value: T) = Success(value)
     }
 }
 
 data class Success<T: Any>(val value: T): Outcome<Nothing, T>()
-data class Failure<E: Error>(val error: E): Outcome<E, Nothing>()
+data class Failure<E>(val error: E): Outcome<E, Nothing>()
 
 
-inline fun <T: Any, U: Any, E: Error> Outcome<E, T>.flatMap(f: (T) -> Outcome<E, U>): Outcome<E, U> =
+inline fun <T: Any, U: Any, E> Outcome<E, T>.flatMap(f: (T) -> Outcome<E, U>): Outcome<E, U> =
     when (this) {
         is Success<T> -> f(value)
         is Failure<E> -> this
     }
 
-inline fun <E: Error, T: Any>Outcome<E, T>.mapNullableError(f: (T) -> E?): Outcome<E, Unit> =
+inline fun <E, T: Any>Outcome<E, T>.mapNullableError(f: (T) -> E?): Outcome<E, Unit> =
     when (this){
         is Success<T> -> {
             val error = f(this.value)
@@ -45,19 +53,18 @@ inline fun <E: Error, T: Any>Outcome<E, T>.mapNullableError(f: (T) -> E?): Outco
         is Failure<E> -> this
     }
 
-inline fun <T: Any, E: Error> Outcome<E, T>.onFailure(block: (E) -> Nothing): T =
+inline fun <T: Any, E> Outcome<E, T>.onFailure(block: (E) -> T): T = // acts like a recover from failure
     when (this) {
         is Success<T> -> value
         is Failure<E> -> block(error)
     }
 
-interface Error{
-    val msg: String
+fun <E, T: Any> List<Outcome<E, T>>.sequence(): Outcome<E, List<T>> {
+    val initial: Outcome<E, List<T>> = Outcome.success(listOf())
+    return this.fold(initial, { acc, curr ->
+        curr.fold(
+            { f -> Failure(f) } ,
+            { value -> acc.map { list -> list.plus(value)}}
+        )
+    })
 }
-
-data class ThrowableError(val t: Throwable): Error {
-    override val msg: String
-        get() = t.message.orEmpty()
-}
-
-fun <T: Error> T.toFailure(): Outcome<T, Nothing> = Failure(this)

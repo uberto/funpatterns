@@ -10,15 +10,18 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class OutcomeTest {
 
     static Outcome<DbError, Order> readOrderFromDb(int orderId) {
-        throw new RuntimeException("TODO");
+        if (orderId == existingOrderId)
+            return new Outcome.Success(new Order(existingOrderId, 123, 123.4));
+        else
+            return new Outcome.Failure(new DbError("order " + orderId + " does not exist"));
     }
 
     static Outcome<DbError, User> readUserFromDb(int id) {
-        throw new RuntimeException("TODO");
+        return new Outcome.Success(new User(id, "Joe"));
     }
 
-    static int existingOrderId = 123;
-    static int notExistingOrderId = 234;
+    private static int existingOrderId = 123;
+    private static int notExistingOrderId = 234;
 
     @Test
     public void checkForErrorCases() {
