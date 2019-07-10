@@ -9,11 +9,11 @@ class EmployeeBirthdayFilter(private val today: LocalDate): (Employee) -> Boolea
         when {
             e.birthDate.`is`(Month.FEBRUARY, 29) && today.isLeapYear -> today.`is`(Month.FEBRUARY, 29)
             e.birthDate.`is`(Month.FEBRUARY, 29)  -> today.`is`(Month.FEBRUARY, 28)
-            else -> today.isSameDateAs(e.birthDate)
+            else -> today isSameDateAs e.birthDate
         }
 
 
-    private fun LocalDate.isSameDateAs(other: LocalDate) =
+    private infix fun LocalDate.isSameDateAs(other: LocalDate) =
         other.month == this.month && other.dayOfMonth == this.dayOfMonth
 
 

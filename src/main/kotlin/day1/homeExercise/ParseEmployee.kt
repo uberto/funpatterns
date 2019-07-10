@@ -8,13 +8,13 @@ class ParseEmployee : (CsvLine) -> Outcome<ProgramError, Employee> {
     override fun invoke(line: CsvLine): Outcome<ProgramError, Employee> =
         line.raw.split(",")
             .map { it.trim() }
-            .let { parts ->
+            .let { csvLineCols ->
                 Outcome.tryThis {
                     Employee(
-                        parts[0],
-                        parts[1],
-                        LocalDate.parse(parts[2], DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                        EmailAddress(parts[3])
+                        lastName = csvLineCols[0],
+                        firstName = csvLineCols[1],
+                        birthDate = LocalDate.parse(csvLineCols[2], DateTimeFormatter.ofPattern("yyyy/MM/dd")),
+                        emailAddress = EmailAddress(csvLineCols[3])
                     )
                 }.mapFailure { ParseError(line.raw) }
             }
