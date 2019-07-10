@@ -1,6 +1,9 @@
 package day1.example3
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 
 class OutcomeTest {
 
@@ -11,39 +14,43 @@ class OutcomeTest {
     data class User(val id: Int, val name: String)
 
 
-    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> = TODO()
+    fun readOrderFromDb(orderId: Int): Outcome<DbError, Order> =
+        if (orderId == 123) Failure(DbError("order not found"))
+        else Success(Order(orderId, 42, 123.0))
 
-    fun readUserFromDb(id: Int): Outcome<DbError, User> = TODO()
+
+    fun readUserFromDb(id: Int): Outcome<DbError, User> =
+        if (id == 555) Failure(DbError("user not found"))
+        else Success(User(id, "foo"))
 
 
     @Test
     fun `check for error cases`() {
-
-        val res = readOrderFromDb(123)
-        return when (res) {
-            is Success -> TODO()
-            is Failure -> TODO()
-        }
-
+        readOrderFromDb(123)
+            .onFailure {
+                return assertThat(it).isEqualTo(DbError("order not found"))
+            }
+       
+        fail("123 must be not found")
     }
 
     @Test
     fun `map results`() {
-        val amount: Double = readOrderFromDb(123)
+        val amount: Double = readOrderFromDb(1234)
             .map { o -> o.amount }
-            .onFailure { return }
+            .onFailure { fail("Outcome must be Success") }
 
-
+        assertThat(amount).isEqualTo(123.0)
     }
 
 
     @Test
     fun `combine results`() {
-        val userName: String = readOrderFromDb(123)
+        val userName: String = readOrderFromDb(1234)
             .flatMap { o -> readUserFromDb(o.userId) }
             .map { it.name }
-            .onFailure { return }
+            .onFailure { fail("Outcome must be Success") }
 
-
+        assertThat(userName).isEqualTo("foo")
     }
 }
