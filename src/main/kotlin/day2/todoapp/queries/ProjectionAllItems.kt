@@ -6,9 +6,12 @@ import day2.todoapp.fp.Outcome
 import day2.todoapp.fp.exhaustive
 import java.util.concurrent.atomic.AtomicLong
 
-val NO_EVENT: Long = -1
 
-class ProjectionAllItems(val projector: Projector<ToDoRow, ItemId>, val eventStore: EventStore<ToDoEvent, ItemId, ToDoItem>) : Projection<ToDoRow, ToDoEvent>{
+
+class ProjectionAllItems(
+    val projector: Projector<ToDoRow, ItemId>,
+    val eventStore: EventStore<ToDoEvent, ItemId, ToDoItem>
+) : Projection<ToDoRow, ToDoEvent> {
 
     val lastEventId = AtomicLong(NO_EVENT)
 
@@ -49,19 +52,17 @@ class ProjectionAllItems(val projector: Projector<ToDoRow, ItemId>, val eventSto
 
     }
 
-    fun updatedProjector():Projector<ToDoRow, ItemId> {
+    fun updatedProjector(): Projector<ToDoRow, ItemId> {
         eventStore.fetchAll(lastEventId.get()).forEach { updateFrom(it) }
         return projector
     }
 
 
+    fun getAll(): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { true }
 
+    fun getOpen(): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { it.state == RowState.OPEN }
 
-fun getAll(): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { true }
-
-fun getOpen(): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { it.state == RowState.OPEN }
-
-fun getItem(id: ItemId): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { it.key == id }
+    fun getItem(id: ItemId): Outcome<TodoError, List<ToDoRow>> = updatedProjector().getFiltered { it.key == id }
 
 }
 

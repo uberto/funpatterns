@@ -6,6 +6,8 @@ import java.time.Instant
 typealias ItemId = String
 typealias EventId = Long
 
+val NO_EVENT: EventId = -1
+
 sealed class ToDoEvent {
    abstract val itemId: ItemId
 }

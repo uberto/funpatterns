@@ -45,7 +45,8 @@ class EndToEndTest {
     val getAllItems = Request(Method.GET, "http://localhost:$port/todos/")
     val getAllOpen = Request(Method.GET, "http://localhost:$port/todos/open")
 
-    fun getAnItem(id: String) = Request(Method.GET, "http://localhost:$port/todos/$id")
+    fun getById(id: String) = Request(Method.GET, "http://localhost:$port/todos/$id")
+    fun getByName(name: String) = Request(Method.GET, "http://localhost:$port/todos/name/$name")
 
     fun createItem(name: String, desc: String) = Request(Method.POST, "http://localhost:$port/todos/add").body(
         """{"name": "$name", "description": "$desc" }"""
@@ -101,7 +102,7 @@ class EndToEndTest {
         val id = "todo_1"
         client(completeItem(id)).expectSuccess()
 
-        val resp = client(getAnItem(id))
+        val resp = client(getById(id))
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -117,7 +118,7 @@ class EndToEndTest {
         val id = "todo_1"
         client(cancelItem(id)).expectSuccess()
 
-        val resp = client(getAnItem(id))
+        val resp = client(getById(id))
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -137,7 +138,7 @@ class EndToEndTest {
 
         client(reopenItem(id)).expectSuccess()
 
-        val resp = client(getAnItem(id))
+        val resp = client(getById(id))
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -166,6 +167,18 @@ class EndToEndTest {
         assertThat(afterJson[0].get("name").asText()).isEqualTo("cook food")
         assertThat(afterJson[1].get("name").asText()).isEqualTo("prepare table")
 
+    }
+
+    @Test
+    fun `get item by name`() {
+        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
+        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
+        client(createItem("cook food", "long desc blablabla")).expectSuccess()
+        client(createItem("prepare table", "long desc blablabla")).expectSuccess()
+
+        val json = client(getByName("cook food")).expectSuccess().toJson()
+        assertThat(json.size()).isEqualTo(1)
+        assertThat(json[0].get("name").asText()).isEqualTo("cook food")
     }
 
     @Test

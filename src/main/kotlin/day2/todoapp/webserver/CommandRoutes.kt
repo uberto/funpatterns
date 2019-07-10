@@ -21,13 +21,13 @@ data class CommandRoutes(val handler: CommandHandler) {
 
         "/todos/add" bind Method.POST to { it.toAdd() execute ::toResponse },
 
-        "/todos/{id}/complete" bind Method.PUT to { it.toComplete() execute ::toResponse },
+        "/todos/{itemId}/complete" bind Method.PUT to { it.toComplete() execute ::toResponse },
 
-        "/todos/{id}/cancel" bind Method.PUT to { it.toCancel() execute ::toResponse },
+        "/todos/{itemId}/cancel" bind Method.PUT to { it.toCancel() execute ::toResponse },
 
-        "/todos/{id}/reopen" bind Method.PUT to { it.toReopen() execute ::toResponse },
+        "/todos/{itemId}/reopen" bind Method.PUT to { it.toReopen() execute ::toResponse },
 
-        "/todos/{id}/edit" bind Method.PUT to { it.toEdit() execute ::toResponse }
+        "/todos/{itemId}/edit" bind Method.PUT to { it.toEdit() execute ::toResponse }
 
     )
 
@@ -37,7 +37,7 @@ data class CommandRoutes(val handler: CommandHandler) {
 }
 
 val Request.id: ItemId
-    get() = this.path("id").orEmpty()
+    get() = this.path("itemId").orEmpty()
 
 
 private fun Request.toAdd(): AddToDoItem = toJsonObj(bodyString()).let {

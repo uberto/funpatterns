@@ -39,7 +39,7 @@ public class Person {
         return "Person{" +
                 "creation=" + creation +
                 ", isCustomer=" + isCustomer +
-                ", id=" + id +
+                ", itemId=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }
