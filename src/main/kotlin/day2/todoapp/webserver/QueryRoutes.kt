@@ -11,6 +11,7 @@ import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
 import org.http4k.format.Jackson
 import org.http4k.routing.bind
+import org.http4k.routing.path
 
 data class QueryRoutes(val handler: QueryHandler) {
 
@@ -28,8 +29,11 @@ data class QueryRoutes(val handler: QueryHandler) {
         "/todos/closed" bind Method.GET to
                 { _: Request -> Response(Status.INTERNAL_SERVER_ERROR).body("not implemented query closed") },
 
-        "/todos/{id}" bind Method.GET to
-                { req -> req.toAnItem() execute ::toResponse }
+        "/todos/name/{name}" bind Method.GET to
+                { req: Request -> req.toByName() execute ::toResponse },
+
+        "/todos/{itemId}" bind Method.GET to
+                { req -> req.toById() execute ::toResponse }
     )
 
     infix fun <T> ToDoQuery.execute(transf: (QueryOutcome) -> T): T = (handler::invoke andThen transf)(this)
@@ -37,7 +41,9 @@ data class QueryRoutes(val handler: QueryHandler) {
 }
 
 
-fun Request.toAnItem(): AnItem = AnItem(this.id)
+fun Request.toById() = singleItemById(this.id)
+
+fun Request.toByName() = singleItemByName(this.path("name").orEmpty())
 
 fun toResponse(outcome: QueryOutcome): Response = outcome.fold(
     { Response(BAD_REQUEST).body(it.toString()) },
