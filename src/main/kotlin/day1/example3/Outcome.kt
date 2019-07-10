@@ -51,6 +51,12 @@ inline fun <T : Any, E : Error> Outcome<E, T>.onFailure(block: (E) -> Nothing): 
         is Failure<E> -> block(error)
     }
 
+inline fun <T : Any, E : Error> Outcome<E, T>.recoverWith(block: (E) -> T): T =
+    when (this) {
+        is Success<T> -> value
+        is Failure<E> -> block(error)
+    }
+
 interface Error {
     val msg: String
 }

@@ -30,7 +30,7 @@ class OutcomeTest {
             .onFailure {
                 return assertThat(it).isEqualTo(DbError("order not found"))
             }
-       
+
         fail("123 must be not found")
     }
 
