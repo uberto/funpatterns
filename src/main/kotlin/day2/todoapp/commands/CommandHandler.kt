@@ -24,7 +24,24 @@ class CommandHandler(private val eventStore: ToDoEventStore) : (ToDoCommand) -> 
                 }
                 is CompleteToDoItem -> {
                     val toDoItem = cmd.id.fetch()
-                    Success(ToDoItemCompleted(cmd.id).store())
+                    when (toDoItem){
+                        is OpenToDoItem ->  Success(ToDoItemCompleted(cmd.id).store())
+                        else -> Failure(TodoError("Item cannot be completed $toDoItem"))
+                    }
+                }
+                is CancelToDoItem -> {
+                    val toDoItem = cmd.id.fetch()
+                    when (toDoItem){
+                        is OpenToDoItem ->  Success(ToDoItemCancelled(cmd.id).store())
+                        else -> Failure(TodoError("Item cannot be cancelled $toDoItem"))
+                    }
+                }
+                is ReOpenToDoItem -> {
+                    val item = cmd.id.fetch()
+                    when (item){
+                        is CompletedToDoItem -> Success(ToDoItemReOpened(cmd.id).store())
+                        else -> Failure(TodoError("Item cannot be reopened $item"))
+                    }
                 }
 
                 else -> Failure(TodoError("Not implemented handler for $cmd"))

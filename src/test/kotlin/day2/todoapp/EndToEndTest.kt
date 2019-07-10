@@ -3,8 +3,10 @@ package day2.todoapp
 import assertk.Assert
 import assertk.all
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.support.expected
 import assertk.assertions.support.show
+import com.fasterxml.jackson.databind.JsonNode
 import day2.todoapp.application.TodoApp
 import org.http4k.client.OkHttp
 import org.http4k.core.Method
@@ -13,6 +15,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.core.Status.Companion.OK
+import org.http4k.format.Jackson
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,6 +43,7 @@ class EndToEndTest {
     }
 
     val getAllItems = Request(Method.GET, "http://localhost:$port/todos/")
+    val getAllOpen = Request(Method.GET, "http://localhost:$port/todos/open")
 
     fun getAnItem(id: String) = Request(Method.GET, "http://localhost:$port/todos/$id")
 
@@ -48,6 +52,8 @@ class EndToEndTest {
     )
 
     fun completeItem(id: String) = Request(Method.PUT, "http://localhost:$port/todos/$id/complete")
+    fun cancelItem(id: String) = Request(Method.PUT, "http://localhost:$port/todos/$id/cancel")
+    fun reopenItem(id: String) = Request(Method.PUT, "http://localhost:$port/todos/$id/reopen")
 
     @Test
     fun `at start the todo list is empty`() {
@@ -90,12 +96,10 @@ class EndToEndTest {
 
     @Test
     fun `complete an item`() {
-        client(createItem("finish the slides", "long desc blablabla"))
-            .apply { assertThat(this).isOk() }
+        client(createItem("finish the slides", "long desc blablabla")).expectSuccess()
 
         val id = "todo_1"
-        client(completeItem(id))
-            .apply { assertThat(this).isOk() }
+        client(completeItem(id)).expectSuccess()
 
         val resp = client(getAnItem(id))
         assertThat(resp).all {
@@ -108,12 +112,60 @@ class EndToEndTest {
 
     @Test
     fun `cancel an item`() {
-        TODO()
+        client(createItem("write the example", "long desc blablabla")).expectSuccess()
+
+        val id = "todo_1"
+        client(cancelItem(id)).expectSuccess()
+
+        val resp = client(getAnItem(id))
+        assertThat(resp).all {
+            hasStatus(OK)
+            bodyContains(id)
+            bodyContains("CANCELLED")
+        }
     }
 
     @Test
     fun `reopen a cancelled item`() {
-        TODO()
+        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
+        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
+        client(createItem("cook food", "long desc blablabla")).expectSuccess()
+
+        val id = "todo_2"
+        client(completeItem(id)).expectSuccess()
+
+
+        client(reopenItem(id)).expectSuccess()
+
+        val resp = client(getAnItem(id))
+        assertThat(resp).all {
+            hasStatus(OK)
+            bodyContains(id)
+            bodyContains("OPEN")
+        }
+    }
+
+    @Test
+    fun `get all open returns only open items`() {
+        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
+        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
+        client(createItem("cook food", "long desc blablabla")).expectSuccess()
+        client(createItem("prepare table", "long desc blablabla")).expectSuccess()
+
+        val beforeJson = client(getAllOpen).expectSuccess().toJson()
+        assertThat(beforeJson.size()).isEqualTo(4)
+
+        client(completeItem("todo_2")).expectSuccess()
+        client(cancelItem("todo_1")).expectSuccess()
+        client(completeItem("todo_4")).expectSuccess()
+        client(reopenItem("todo_4")).expectSuccess()
+
+
+        val afterJson = client(getAllOpen).expectSuccess().toJson()
+        assertThat(afterJson.size()).isEqualTo(2)
+        assertThat(afterJson[0].get("name").asText()).isEqualTo("cook food")
+        assertThat(afterJson[1].get("name").asText()).isEqualTo("prepare table")
+
     }
 
     @Test
@@ -121,7 +173,15 @@ class EndToEndTest {
         TODO()
     }
 
+    private fun Response.expectSuccess() : Response =
+       apply{ assertThat(this).isOk()}
+
+
 }
+
+private fun Response.toJson(): JsonNode =
+    Jackson{ this@toJson.bodyString().asJsonObject() }
+
 
 fun Assert<Response>.isOk() =
     given {

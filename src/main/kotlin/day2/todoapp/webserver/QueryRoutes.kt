@@ -22,15 +22,14 @@ data class QueryRoutes(val handler: QueryHandler) {
         "/todos/" bind Method.GET to
                 { _: Request -> allItems execute ::toResponse },
 
-        "/todos/{id}" bind Method.GET to
-                { req -> req.toAnItem() execute ::toResponse },
-
         "/todos/open" bind Method.GET to
                 { _: Request -> allOpenItems execute ::toResponse },
 
         "/todos/closed" bind Method.GET to
-                { _: Request -> Response(Status.INTERNAL_SERVER_ERROR).body("not implemented query closed") }
+                { _: Request -> Response(Status.INTERNAL_SERVER_ERROR).body("not implemented query closed") },
 
+        "/todos/{id}" bind Method.GET to
+                { req -> req.toAnItem() execute ::toResponse }
     )
 
     infix fun <T> ToDoQuery.execute(transf: (QueryOutcome) -> T): T = (handler::invoke andThen transf)(this)
