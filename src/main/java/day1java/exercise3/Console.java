@@ -7,15 +7,11 @@ import java.util.function.Supplier;
 
 public class Console<T> {
 
-    public Console(Supplier<T> exec){
+    public Console(Supplier<T> exec) {
         this.exec = exec;
     }
 
     public Supplier<T> exec;
-
-
-
-
 
 
     public static Console<Void> printIO(String msg) {

@@ -6,11 +6,16 @@ public class ConsoleTest {
 
     //implement pseudoPrint and pseudoReadline using Queue<String> instead than stdin and stdout
 
-    static Console<Void> pseudoPrint(String msg) { throw new RuntimeException("TODO"); }
-    static Console<String> pseudoReadline() { throw new RuntimeException("TODO"); }
+    static Console<Void> pseudoPrint(String msg) {
+        throw new RuntimeException("TODO");
+    }
+
+    static Console<String> pseudoReadline() {
+        throw new RuntimeException("TODO");
+    }
 
     @Test
-    public void howCanWeTestTheConsole(){
+    public void howCanWeTestTheConsole() {
 
         EchoMachine echo = new EchoMachine(ConsoleTest::pseudoPrint, ConsoleTest::pseudoReadline);
 
@@ -22,7 +27,7 @@ public class ConsoleTest {
 
 
     @Test
-    public void testAMiniCmdlineCalculator(){
+    public void testAMiniCmdlineCalculator() {
         // giving + 1 1
         // should give 2 as result
 

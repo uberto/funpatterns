@@ -8,12 +8,12 @@ import java.util.*
 
 class CurryingTest {
 
-    fun strConcat(s1: String, s2: String) = s1+s2
+    fun strConcat(s1: String, s2: String) = s1 + s2
 
-    data class Person( val creation: Date, val isCustomer: Boolean, val id: Int, val name: String )
+    data class Person(val creation: Date, val isCustomer: Boolean, val id: Int, val name: String)
 
     @Test
-    fun `currying concat`(){
+    fun `currying concat`() {
 
         val starPrefix = ::strConcat.curry()("*")
 
@@ -23,28 +23,28 @@ class CurryingTest {
 
 
     @Test
-    fun `currying Person`(){
+    fun `currying Person`() {
 
         val now = Date()
         val fred =
             ::Person.curry() `@` now `@` false `@` 4 `@` "Fred"
 
         val fredOrig =
-            Person(now,false, 4,"Fred")
+            Person(now, false, 4, "Fred")
 
         assertThat(fred).isEqualTo(fredOrig)
 
     }
 
     @Test
-    fun `creating People`(){
+    fun `creating People`() {
 
         val personPartBuilder =
-            ::Person.curry()   `@` Date() `@` true
+            ::Person.curry() `@` Date() `@` true
 
         val name = listOf("Fred", "Mary", "Ann", "Bob")
 
-        val people = name.mapIndexed{ i, name ->
+        val people = name.mapIndexed { i, name ->
             personPartBuilder(i)(name)
         }
 

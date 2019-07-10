@@ -4,7 +4,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
-data class Console<T> (val exec: () -> T) {
+data class Console<T>(val exec: () -> T) {
 
     fun andThen(other: Console<T>): Console<T> = Console {
         this.exec()
@@ -13,8 +13,8 @@ data class Console<T> (val exec: () -> T) {
 }
 
 
-fun printIO(msg: String): Console<Unit> = Console { println(msg)}
+fun printIO(msg: String): Console<Unit> = Console { println(msg) }
 
-val reader =  BufferedReader( InputStreamReader(System.`in`))
+val reader = BufferedReader(InputStreamReader(System.`in`))
 
 fun readlineIO() = Console<String> { reader.readLine() }

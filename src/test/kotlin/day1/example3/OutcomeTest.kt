@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 
 class OutcomeTest {
 
-    data class DbError(override val msg: String): Error
+    data class DbError(override val msg: String) : Error
 
     data class Order(val id: Int, val userId: Int, val amount: Double)
 
@@ -17,10 +17,10 @@ class OutcomeTest {
 
 
     @Test
-    fun `check for error cases`(){
+    fun `check for error cases`() {
 
         val res = readOrderFromDb(123)
-        return when(res){
+        return when (res) {
             is Success -> TODO()
             is Failure -> TODO()
         }
@@ -28,7 +28,7 @@ class OutcomeTest {
     }
 
     @Test
-    fun `map results`(){
+    fun `map results`() {
         val amount: Double = readOrderFromDb(123)
             .map { o -> o.amount }
             .onFailure { return }
@@ -38,10 +38,10 @@ class OutcomeTest {
 
 
     @Test
-    fun `combine results`(){
+    fun `combine results`() {
         val userName: String = readOrderFromDb(123)
             .flatMap { o -> readUserFromDb(o.userId) }
-            .map {it.name}
+            .map { it.name }
             .onFailure { return }
 
 

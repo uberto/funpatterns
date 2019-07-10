@@ -10,7 +10,7 @@ class ConsoleTest {
     val pseudoReadline: () -> Console<String> = TODO()
 
     @Test
-    fun `how can we test the console?`(){
+    fun `how can we test the console?`() {
 
         val echo = EchoMachine(pseudoPrint, pseudoReadline)
 
@@ -22,7 +22,7 @@ class ConsoleTest {
 
 
     @Test
-    fun `test a mini cmdline calculator`(){
+    fun `test a mini cmdline calculator`() {
         // giving + 1 1
         // should give 2 as result
 
