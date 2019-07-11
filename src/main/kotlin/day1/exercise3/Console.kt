@@ -4,11 +4,19 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
-data class Console<T> (val exec: () -> T) {
+data class Console<A> (val exec: () -> A) {
 
-    fun andThen(other: Console<T>): Console<T> = Console {
+    fun andThen(other: Console<A>): Console<A> = Console {
         this.exec()
         other.exec()
+    }
+
+    fun <B> map(f: (A) -> B): Console<B> = Console {
+        f(exec())
+    }
+
+    fun <B> flatMap(f: (A) -> Console<B>): Console<B> = Console {
+        f(exec()).exec()
     }
 }
 
