@@ -38,7 +38,7 @@ class EndToEndTest {
 
     @Test
     fun `responds to ping`() {
-        val resp = client(Request(Method.GET, "http://localhost:$port/ping"))
+        val resp = Request(Method.GET, "http://localhost:$port/ping").send()
         assertThat(resp).hasStatus(OK)
     }
 
@@ -58,7 +58,7 @@ class EndToEndTest {
 
     @Test
     fun `at start the todo list is empty`() {
-        val resp = client(getAllItems)
+        val resp = getAllItems.send()
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains("[ ]")
@@ -67,26 +67,26 @@ class EndToEndTest {
 
     @Test
     fun `add a few items`() {
-        val cmd1Resp = client(createItem("finish the exercise1", "long desc 1 blablabla"))
+        val cmd1Resp = createItem("finish the exercise1", "long desc 1 blablabla").send()
         assertThat(cmd1Resp).all {
             hasStatus(CREATED)
             bodyContains("exercise1")
         }
 
-        val cmd2Resp = client(createItem("finish the exercise2", "long desc 2 blablabla"))
+        val cmd2Resp = createItem("finish the exercise2", "long desc 2 blablabla").send()
         assertThat(cmd2Resp).all {
             hasStatus(CREATED)
             bodyContains("exercise2")
         }
 
-        val cmd3Resp = client(createItem("finish the exercise3", "long desc 3 blablabla"))
+        val cmd3Resp = createItem("finish the exercise3", "long desc 3 blablabla").send()
         assertThat(cmd3Resp).all {
             hasStatus(CREATED)
             bodyContains("exercise3")
         }
 
 
-        val resp = client(getAllItems)
+        val resp = getAllItems.send()
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains("todo_1")
@@ -97,12 +97,12 @@ class EndToEndTest {
 
     @Test
     fun `complete an item`() {
-        client(createItem("finish the slides", "long desc blablabla")).expectSuccess()
+        createItem("finish the slides", "long desc blablabla").send().expectSuccess()
 
         val id = "todo_1"
-        client(completeItem(id)).expectSuccess()
+        completeItem(id).send().expectSuccess()
 
-        val resp = client(getById(id))
+        val resp = getById(id).send()
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -113,12 +113,12 @@ class EndToEndTest {
 
     @Test
     fun `cancel an item`() {
-        client(createItem("write the example", "long desc blablabla")).expectSuccess()
+        createItem("write the example", "long desc blablabla").send().expectSuccess()
 
         val id = "todo_1"
-        client(cancelItem(id)).expectSuccess()
+        cancelItem(id).send().expectSuccess()
 
-        val resp = client(getById(id))
+        val resp = getById(id).send()
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -128,17 +128,17 @@ class EndToEndTest {
 
     @Test
     fun `reopen a cancelled item`() {
-        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
-        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
-        client(createItem("cook food", "long desc blablabla")).expectSuccess()
+        createItem("buy eggs", "long desc blablabla").send().expectSuccess()
+        createItem("clean kitchen", "long desc blablabla").send().expectSuccess()
+        createItem("cook food", "long desc blablabla").send().expectSuccess()
 
         val id = "todo_2"
-        client(completeItem(id)).expectSuccess()
+        completeItem(id).send().expectSuccess()
 
 
-        client(reopenItem(id)).expectSuccess()
+        reopenItem(id).send().expectSuccess()
 
-        val resp = client(getById(id))
+        val resp = getById(id).send()
         assertThat(resp).all {
             hasStatus(OK)
             bodyContains(id)
@@ -148,21 +148,21 @@ class EndToEndTest {
 
     @Test
     fun `get all open returns only open items`() {
-        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
-        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
-        client(createItem("cook food", "long desc blablabla")).expectSuccess()
-        client(createItem("prepare table", "long desc blablabla")).expectSuccess()
+        createItem("buy eggs", "long desc blablabla").send().expectSuccess()
+        createItem("clean kitchen", "long desc blablabla").send().expectSuccess()
+        createItem("cook food", "long desc blablabla").send().expectSuccess()
+        createItem("prepare table", "long desc blablabla").send().expectSuccess()
 
-        val beforeJson = client(getAllOpen).expectSuccess().toJson()
+        val beforeJson = getAllOpen.send().expectSuccess().toJson()
         assertThat(beforeJson.size()).isEqualTo(4)
 
-        client(completeItem("todo_2")).expectSuccess()
-        client(cancelItem("todo_1")).expectSuccess()
-        client(completeItem("todo_4")).expectSuccess()
-        client(reopenItem("todo_4")).expectSuccess()
+        completeItem("todo_2").send().expectSuccess()
+        cancelItem("todo_1").send().expectSuccess()
+        completeItem("todo_4").send().expectSuccess()
+        reopenItem("todo_4").send().expectSuccess()
 
 
-        val afterJson = client(getAllOpen).expectSuccess().toJson()
+        val afterJson = getAllOpen.send().expectSuccess().toJson()
         assertThat(afterJson.size()).isEqualTo(2)
         assertThat(afterJson[0].get("name").asText()).isEqualTo("cook food")
         assertThat(afterJson[1].get("name").asText()).isEqualTo("prepare table")
@@ -171,12 +171,12 @@ class EndToEndTest {
 
     @Test
     fun `get item by name`() {
-        client(createItem("buy eggs", "long desc blablabla")).expectSuccess()
-        client(createItem("clean kitchen", "long desc blablabla")).expectSuccess()
-        client(createItem("cook food", "long desc blablabla")).expectSuccess()
-        client(createItem("prepare table", "long desc blablabla")).expectSuccess()
+        createItem("buy eggs", "long desc blablabla").send().expectSuccess()
+        createItem("clean kitchen", "long desc blablabla").send().expectSuccess()
+        createItem("cook food", "long desc blablabla").send().expectSuccess()
+        createItem("prepare table", "long desc blablabla").send().expectSuccess()
 
-        val json = client(getByName("cook food")).expectSuccess().toJson()
+        val json = getByName("cook food").send().expectSuccess().toJson()
         assertThat(json.size()).isEqualTo(1)
         assertThat(json[0].get("name").asText()).isEqualTo("cook food")
     }
@@ -185,6 +185,8 @@ class EndToEndTest {
     fun `edit an item`() {
         TODO()
     }
+
+    private fun Request.send() : Response = client(this)
 
     private fun Response.expectSuccess() : Response =
        apply{ assertThat(this).isOk()}
