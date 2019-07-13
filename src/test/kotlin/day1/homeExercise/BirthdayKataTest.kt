@@ -18,15 +18,17 @@ class BirthdayKataTest {
     private val server = SMTPServer.port(MAIL_SERVER_PORT).messageHandler(sentMessageListener).build()
 
     private val sendGreetingsToAll = SendGreetingsToAll(
-        ReadCsv(),
-        ParseEmployee(),
+        LoadEmployees(ReadCsv(), ParseEmployee()),
         EmployeeBirthdayFilter(today),
-        ComposeBirthdayEmailMessage("Happy birthday %s!"),
-        SendEmail(
-            MailServerConfiguration(
-            host = "localhost",
-            port = MAIL_SERVER_PORT
-        ))
+        SendBirthDayGreetingMail(
+            ComposeBirthdayEmailMessage("Happy birthday %s!"),
+            SendEmail(
+                MailServerConfiguration(
+                    host = "localhost",
+                    port = MAIL_SERVER_PORT
+                )
+            )
+        )
     )
 
     @BeforeEach
@@ -40,7 +42,7 @@ class BirthdayKataTest {
     }
 
     @Test
-    fun `happy path`(){
+    fun `happy path`() {
         sendGreetingsToAll(FileName("/fixtures/bigFile.csv"))
         assertThat(sentMessageListener.recipients).containsAll(
             "mary.ann@foobar.com",
@@ -54,7 +56,7 @@ class BirthdayKataTest {
 
 
     @Test
-    fun `csv file with errors`(){
+    fun `csv file with errors`() {
         sendGreetingsToAll(FileName("/fixtures/wrongFile.csv"))
         assertThat(sentMessageListener.recipients).isEmpty()
     }
