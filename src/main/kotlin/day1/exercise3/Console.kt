@@ -6,7 +6,7 @@ import java.io.InputStreamReader
 
 data class Console<A> (val exec: () -> A) {
 
-    fun andThen(other: Console<A>): Console<A> = Console {
+    fun <R> andThen(other: Console<R>): Console<R> = Console {
         this.exec()
         other.exec()
     }
@@ -18,6 +18,7 @@ data class Console<A> (val exec: () -> A) {
     fun <B> flatMap(f: (A) -> Console<B>): Console<B> = Console {
         f(exec()).exec()
     }
+
 }
 
 

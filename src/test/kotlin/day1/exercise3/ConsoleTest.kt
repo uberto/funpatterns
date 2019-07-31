@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class ConsoleTest {
+public class ConsoleTest {
 
     val output = ArrayDeque<String>()
     val input = ArrayDeque<String>()
@@ -50,5 +50,7 @@ class ConsoleTest {
         assertThat(output.remove()).isEqualTo("30.0")
         assertThat(output.remove()).isEqualTo("Unknown operation @")
     }
+
+
 
 }
